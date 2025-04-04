@@ -22,7 +22,11 @@ from handlers.profile import (
 )
 from handlers.cars import cars_handler
 from handlers.booking import booking_handler
-from handlers.cart import cart_handler
+from handlers.cart import (
+    cart_handler,
+    checkout_handler,
+    clear_cart_handler
+)
 from handlers.back import back_handler
 from handlers.help import help_handler  # Yangi qo'shilgan
 from handlers.error import error_handler
@@ -43,7 +47,7 @@ def setup_handlers(app):
     app.add_handler(MessageHandler(filters.Regex("^🚗 Mashinalar$"), cars_handler))
     app.add_handler(MessageHandler(filters.Regex("^📅 Bron qilish$"), booking_handler))
     app.add_handler(MessageHandler(filters.Regex(r"^(👤 Profil|Profil)$"), profile_button_handler))
-    app.add_handler(MessageHandler(filters.Regex("^🛒 Savatcha$"), cart_handler))
+    app.add_handler(MessageHandler(filters.Regex(r"^(🛒 Savatcha|Savatcha)$"), cart_handler))
     app.add_handler(MessageHandler(filters.Regex("^ℹ️ Yordam$"), help_handler))  # Yangi
     
     # 3. Callback query handlers
@@ -53,6 +57,11 @@ def setup_handlers(app):
     app.add_handler(CallbackQueryHandler(edit_phone_handler, pattern="^edit_phone$"))
     app.add_handler(CallbackQueryHandler(edit_license_handler, pattern="^edit_license$"))
     app.add_handler(CallbackQueryHandler(back_handler, pattern="^back$"))
+    app.add_handler(CallbackQueryHandler(cart_handler, pattern="^cart$"))
+    app.add_handler(CallbackQueryHandler(cart_handler, pattern="^checkout$"))
+    app.add_handler(CallbackQueryHandler(cart_handler, pattern="^clear_cart$"))
+    app.add_handler(CallbackQueryHandler(checkout_handler, pattern="^checkout$"))
+    app.add_handler(CallbackQueryHandler(clear_cart_handler, pattern="^clear_cart$"))
     
     
     # 4. Profile edit handler
