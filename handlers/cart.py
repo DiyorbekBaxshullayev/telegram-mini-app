@@ -1,5 +1,8 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
+import logging
+
+logger = logging.getLogger(__name__)
 
 async def cart_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Savatcha bo'limi"""

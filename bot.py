@@ -20,7 +20,7 @@ from handlers.profile import (
     edit_license_handler,
     save_profile_changes
 )
-from handlers.cars import cars_handler
+from handlers.cars import cars_handler, car_detail_handler
 from handlers.booking import booking_handler
 from handlers.cart import (
     cart_handler,
@@ -44,7 +44,7 @@ def setup_handlers(app):
     app.add_handler(CommandHandler("yordam", help_handler))  # Yangi
 
     # 2. Menu button handlers
-    app.add_handler(MessageHandler(filters.Regex("^🚗 Mashinalar$"), cars_handler))
+    app.add_handler(MessageHandler(filters.Regex(r"^(🚗 Mashinalar|Mashinalar)$"), cars_handler))
     app.add_handler(MessageHandler(filters.Regex("^📅 Bron qilish$"), booking_handler))
     app.add_handler(MessageHandler(filters.Regex(r"^(👤 Profil|Profil)$"), profile_button_handler))
     app.add_handler(MessageHandler(filters.Regex(r"^(🛒 Savatcha|Savatcha)$"), cart_handler))
@@ -62,6 +62,8 @@ def setup_handlers(app):
     app.add_handler(CallbackQueryHandler(cart_handler, pattern="^clear_cart$"))
     app.add_handler(CallbackQueryHandler(checkout_handler, pattern="^checkout$"))
     app.add_handler(CallbackQueryHandler(clear_cart_handler, pattern="^clear_cart$"))
+    app.add_handler(CallbackQueryHandler(car_detail_handler, pattern="^car_\d+$"))
+    app.add_handler(CallbackQueryHandler(car_detail_handler, pattern="^rent_\d+_\d+$"))
     
     
     # 4. Profile edit handler
