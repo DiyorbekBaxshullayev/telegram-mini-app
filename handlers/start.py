@@ -1,20 +1,22 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Bosh menyu handleri"""
-    user = update.effective_user
-    web_app_url = "https://your-web-app-url.com"
-    
-    keyboard = [
-        [
-            InlineKeyboardButton("🚗 Mashinalar", callback_data="cars"),
-            InlineKeyboardButton("📅 Bron qilish", web_app=WebAppInfo(url=web_app_url))
-        ],
-        [InlineKeyboardButton("👤 Profil", callback_data="profile")]
+    """Botni ishga tushirish"""
+    menu_buttons = [
+        ["🚗 Mashinalar", "📅 Bron qilish"],
+        ["👤 Profil", "🛒 Savatcha"],
+        ["ℹ️ Yordam"]  # Yangi qo'shilgan
     ]
     
-    await update.message.reply_html(
-        rf"Salom {user.mention_html()}! Rent-a-Car botiga xush kelibsiz!",
-        reply_markup=InlineKeyboardMarkup(keyboard)
+    reply_markup = ReplyKeyboardMarkup(
+        menu_buttons,
+        resize_keyboard=True,
+        one_time_keyboard=False
+    )
+    
+    await update.message.reply_text(
+        "🚖 Rent-a-Car botiga xush kelibsiz!\n"
+        "Quyidagi menyudan kerakli bo'limni tanlang yoki /yordam buyrug'ini yuboring.",
+        reply_markup=reply_markup
     )

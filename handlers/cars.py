@@ -1,23 +1,13 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import ContextTypes
 
 async def cars_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Mashinalar ro'yxati handleri"""
-    query = update.callback_query
-    await query.answer()
-    
-    cars = [
-        {"id": 1, "model": "Cobalt", "price": 150000},
-        {"id": 2, "model": "Gentra", "price": 180000},
-        {"id": 3, "model": "Malibu", "price": 250000}
-    ]
-    
-    buttons = [
-        [InlineKeyboardButton(f"{car['model']} - {car['price']:,} so'm/soat", 
-        callback_data=f"car_{car['id']}")] for car in cars
-    ]
-    buttons.append([InlineKeyboardButton("🔙 Orqaga", callback_data="back")])
-    
-    await query.edit_message_text(
-        text="🏎 Mavjud mashinalar:",
-        reply_markup=InlineKeyboardMarkup(buttons))
+    """Mashinalar bo'limi"""
+    await update.message.reply_text(
+        text="Mashinalar ro'yxati:\n\n"
+             "1. Chevrolet Spark - $30/kun\n"
+             "2. Gentra - $40/kun\n"
+             "3. Cobalt - $50/kun\n"
+             "4. Malibu - $80/kun\n\n"
+             "Bron qilish uchun mashinani tanlang."
+    )

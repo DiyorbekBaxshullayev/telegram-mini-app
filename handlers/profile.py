@@ -1,30 +1,46 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, MessageHandler, filters
 
-async def profile_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Profil ma'lumotlari handleri"""
-    query = update.callback_query
-    await query.answer()
-    
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram.ext import ContextTypes, MessageHandler, filters
+
+async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE, is_callback: bool = False):
+    """Profil ma'lumotlarini ko'rsatish (umumiy funksiya)"""
     user_data = context.user_data.setdefault('profile', {
         'name': 'Ism kiritilmagan',
         'phone': 'Telefon kiritilmagan',
         'license': 'Guvohnoma kiritilmagan'
     })
     
-    await query.edit_message_text(
-        text=f"👤 <b>Profil ma'lumotlari</b>\n\n"
-             f"🏷 Ism: {user_data['name']}\n"
-             f"📱 Telefon: {user_data['phone']}\n"
-             f"📜 Guvohnoma: {user_data['license']}\n\n"
-             f"Quyidagilardan birini tahrirlashingiz mumkin:",
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("✏️ Ismni o'zgartirish", callback_data="edit_name")],
-            [InlineKeyboardButton("📱 Telefon raqamni o'zgartirish", callback_data="edit_phone")],
-            [InlineKeyboardButton("📜 Guvohnoma ma'lumotlari", callback_data="edit_license")],
-            [InlineKeyboardButton("🔙 Orqaga", callback_data="back")]
-        ]),
-        parse_mode='HTML')
+    text = (f"👤 <b>Profil ma'lumotlari</b>\n\n"
+            f"🏷 Ism: {user_data['name']}\n"
+            f"📱 Telefon: {user_data['phone']}\n"
+            f"📜 Guvohnoma: {user_data['license']}\n\n"
+            f"Quyidagilardan birini tahrirlashingiz mumkin:")
+    
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("✏️ Ismni o'zgartirish", callback_data="edit_name")],
+        [InlineKeyboardButton("📱 Telefon raqamni o'zgartirish", callback_data="edit_phone")],
+        [InlineKeyboardButton("📜 Guvohnoma ma'lumotlari", callback_data="edit_license")],
+        [InlineKeyboardButton("🔙 Orqaga", callback_data="back")]
+    ])
+    
+    if is_callback:
+        await update.callback_query.edit_message_text(text, reply_markup=keyboard, parse_mode='HTML')
+    else:
+        await update.message.reply_text(text, reply_markup=keyboard, parse_mode='HTML')
+
+async def profile_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Profil uchun asosiy handler (message va callback uchun)"""
+    if update.callback_query:
+        await show_profile(update, context, is_callback=True)
+    elif update.message:
+        await show_profile(update, context)
+
+async def profile_button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Tugma orqali profilni ochish"""
+    await show_profile(update, context)
+
 
 async def edit_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Ism tahrirlash handleri"""
